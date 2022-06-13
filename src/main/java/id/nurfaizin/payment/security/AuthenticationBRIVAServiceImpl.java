@@ -44,8 +44,6 @@ public class AuthenticationBRIVAServiceImpl implements AuthenticationService<Aut
         HttpResponse<String> response = HttpClientConfig.httpClient
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
-        System.out.println(response);
-
         return objectMapper.readValue(response.body(), AuthenticationResponse.class);
     }
 }
