@@ -1,4 +1,4 @@
-package id.nurfaizin.payment.briva;
+package id.nurfaizin.payment.security;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
