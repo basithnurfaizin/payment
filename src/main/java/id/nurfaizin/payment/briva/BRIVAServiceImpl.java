@@ -26,12 +26,9 @@ public class BRIVAServiceImpl implements BRIVAService {
     private final AuthenticationBRIVAServiceImpl authenticationBRIVAService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     private final String RELATIVE_URL;
 
     private final String BASE_URL;
-
-
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     public BRIVAServiceImpl(AuthenticationBRIVAServiceImpl authenticationBRIVAService,
@@ -109,7 +106,45 @@ public class BRIVAServiceImpl implements BRIVAService {
 
         String path = RELATIVE_URL+"/"+institutionCode+"/"+accountNumber+"/"+customerCode;
 
-        System.out.println(path);
+        return convertStringToObject(authenticate, formattedTime, path);
+    }
+
+
+    @Override
+    public String getStatusPayment(String institutionCode, Long accountNumber, String customerCode) throws IOException, InterruptedException {
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        AuthenticationResponse authenticate = authenticationBRIVAService.authenticate();
+
+        String formattedTime =  sdf.format(timestamp);
+
+        String path = RELATIVE_URL+"/status"+"/"+institutionCode+"/"+accountNumber+"/"+customerCode;
+
+        BaseResponseBRIVA<VirtualAccountResponse> responseBRIVA = convertStringToObject(authenticate, formattedTime, path);
+
+        return responseBRIVA.getData().getStatus();
+    }
+
+    private BaseResponseBRIVA<VirtualAccountResponse> convertStringToObject(AuthenticationResponse authenticate, String formattedTime, String path) throws IOException, InterruptedException {
+        HttpResponse<String> response = encryptPayload(authenticate, formattedTime, path);
+
+        BaseResponseBRIVA<VirtualAccountResponse> responseBRIVA = objectMapper.readValue(
+                response.body(),
+                new TypeReference<>() {
+                }
+        );
+
+        if (!responseBRIVA.getStatus() && responseBRIVA.getResponseCode().equalsIgnoreCase("14")) {
+            throw new BRIVAException(MessageConstant.VIRTUAL_ACCOUNT_NOT_FOUND);
+        }
+
+        return responseBRIVA;
+    }
+
+
+    private  HttpResponse<String> encryptPayload(AuthenticationResponse authenticate, String formattedTime, String path) throws IOException, InterruptedException {
         String payload = "path="+path+"&verb=GET&token=Bearer "+authenticate.getAccessToken()+"&timestamp="+formattedTime+"&body=";
 
         SignatureBRIVA signatureBRIVA = new SignatureBRIVA();
@@ -127,22 +162,8 @@ public class BRIVAServiceImpl implements BRIVAService {
                 .header("Authorization", "Bearer " + authenticate.getAccessToken())
                 .build();
 
-        URI uri = httpRequest.uri();
-        System.out.println(uri.toString());
-        HttpResponse<String> response = HttpClientConfig.httpClient
+        return HttpClientConfig.httpClient
                 .send(httpRequest, HttpResponse.BodyHandlers.ofString());
-
-
-        BaseResponseBRIVA<VirtualAccountResponse> responseBRIVA = objectMapper.readValue(
-                response.body(),
-                new TypeReference<>() {
-                }
-        );
-
-        if (!responseBRIVA.getStatus() && responseBRIVA.getResponseCode().equalsIgnoreCase("14")) {
-            throw new BRIVAException(MessageConstant.VIRTUAL_ACCOUNT_NOT_FOUND);
-        }
-
-        return responseBRIVA;
     }
+
 }
