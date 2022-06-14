@@ -13,4 +13,6 @@ public interface BRIVAService {
             InterruptedException;
 
     BaseResponseBRIVA<VirtualAccountResponse> getVirtualAccountInfo(String institutionCode, Long accountNumber, String customerCode) throws IOException, InterruptedException;
+
+    String getStatusPayment(String institutionCode, Long accountNumber, String customerCode) throws IOException, InterruptedException;
 }
