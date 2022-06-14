@@ -159,4 +159,24 @@ public class AuthenticationResponse {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "AuthenticationResponse{" +
+                "refreshTokenExpiresIn='" + refreshTokenExpiresIn + '\'' +
+                ", apiProductList='" + apiProductList + '\'' +
+                ", apiProductListJson=" + apiProductListJson +
+                ", organizationName='" + organizationName + '\'' +
+                ", developerEmail='" + developerEmail + '\'' +
+                ", tokenType='" + tokenType + '\'' +
+                ", issuedAt='" + issuedAt + '\'' +
+                ", clientId='" + clientId + '\'' +
+                ", accessToken='" + accessToken + '\'' +
+                ", applicationName='" + applicationName + '\'' +
+                ", scope='" + scope + '\'' +
+                ", expiresIn='" + expiresIn + '\'' +
+                ", refreshCount='" + refreshCount + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }
