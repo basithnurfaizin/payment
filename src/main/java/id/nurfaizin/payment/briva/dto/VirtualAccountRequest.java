@@ -2,7 +2,7 @@ package id.nurfaizin.payment.briva.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class VirtualAccountDTO {
+public class VirtualAccountRequest {
 
     @JsonProperty("institutionCode")
     private String institutionCode;
@@ -23,11 +23,17 @@ public class VirtualAccountDTO {
 
     private String expiredDate;
 
-    public VirtualAccountDTO() {
+//    @JsonProperty("statusBayar")
+//    private String status;
+//
+//    @JsonProperty("lastUpdate")
+//    private String lastUpdate;
+
+    public VirtualAccountRequest() {
 
     }
 
-    public VirtualAccountDTO(String institutionCode, Long accountNumber, Long customerCode, String name, Integer amount, String description, String expiredDate) {
+    public VirtualAccountRequest(String institutionCode, Long accountNumber, Long customerCode, String name, Integer amount, String description, String expiredDate) {
         this.institutionCode = institutionCode;
         this.accountNumber = accountNumber;
         this.customerCode = customerCode;
@@ -64,4 +70,12 @@ public class VirtualAccountDTO {
     public String getExpiredDate() {
         return expiredDate;
     }
+
+//    public String getStatus() {
+//        return status;
+//    }
+//
+//    public String getLastUpdate() {
+//        return lastUpdate;
+//    }
 }
