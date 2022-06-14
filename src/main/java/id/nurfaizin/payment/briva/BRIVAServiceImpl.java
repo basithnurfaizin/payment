@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import id.nurfaizin.payment.briva.dto.BaseResponseBRIVA;
 import id.nurfaizin.payment.briva.dto.VirtualAccountDTO;
+import id.nurfaizin.payment.enums.MessageConstant;
+import id.nurfaizin.payment.exception.BRIVAException;
 import id.nurfaizin.payment.security.AuthenticationBRIVAServiceImpl;
 import id.nurfaizin.payment.security.AuthenticationResponse;
 import id.nurfaizin.payment.signature.SignatureBRIVA;
@@ -73,11 +75,17 @@ public class BRIVAServiceImpl implements BRIVAService {
                     .send(requestCreateVirtualAccount, HttpResponse.BodyHandlers.ofString());
 
 
-            return objectMapper.readValue(
+            BaseResponseBRIVA<VirtualAccountDTO> responseBRIVA = objectMapper.readValue(
                     response.body(),
                     new TypeReference<>() {
                     }
             );
+
+            if (!responseBRIVA.getStatus() && responseBRIVA.getResponseCode().equalsIgnoreCase("13")) {
+                throw new BRIVAException(MessageConstant.VIRTUAL_ACCOUNT_EXIST);
+            }
+
+            return responseBRIVA;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
