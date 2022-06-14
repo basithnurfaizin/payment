@@ -1,8 +1,6 @@
 package id.nurfaizin.payment.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import id.nurfaizin.payment.briva.AuthenticationResponse;
 import id.nurfaizin.payment.util.HttpClientConfig;
 
 import java.io.IOException;
@@ -29,7 +27,7 @@ public class AuthenticationBRIVAServiceImpl implements AuthenticationService<Aut
     }
 
     @Override
-    public AuthenticationResponse getToken() throws IOException, InterruptedException {
+    public AuthenticationResponse authenticate() throws IOException, InterruptedException {
 
         Map<Object, Object> map = new HashMap<>();
         map.put("client_id", this.clientId);
@@ -45,5 +43,13 @@ public class AuthenticationBRIVAServiceImpl implements AuthenticationService<Aut
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
         return objectMapper.readValue(response.body(), AuthenticationResponse.class);
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public String getClientSecret() {
+        return clientSecret;
     }
 }
