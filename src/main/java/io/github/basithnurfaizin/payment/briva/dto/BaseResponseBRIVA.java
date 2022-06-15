@@ -1,4 +1,4 @@
-package id.nurfaizin.payment.briva.dto;
+package io.github.basithnurfaizin.payment.briva.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

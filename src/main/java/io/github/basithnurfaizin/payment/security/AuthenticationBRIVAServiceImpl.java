@@ -1,7 +1,7 @@
-package id.nurfaizin.payment.security;
+package io.github.basithnurfaizin.payment.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import id.nurfaizin.payment.util.HttpClientConfig;
+import io.github.basithnurfaizin.payment.util.HttpClientConfig;
 
 import java.io.IOException;
 import java.net.URI;

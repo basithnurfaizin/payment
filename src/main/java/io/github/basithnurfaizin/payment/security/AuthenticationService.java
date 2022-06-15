@@ -1,4 +1,4 @@
-package id.nurfaizin.payment.security;
+package io.github.basithnurfaizin.payment.security;
 
 import java.io.IOException;
 
