@@ -1,9 +1,7 @@
 package io.github.basithnurfaizin.payment.briva;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.github.basithnurfaizin.payment.briva.dto.BaseResponseBRIVA;
-import io.github.basithnurfaizin.payment.briva.dto.VirtualAccountRequest;
-import io.github.basithnurfaizin.payment.briva.dto.VirtualAccountResponse;
+import io.github.basithnurfaizin.payment.briva.dto.*;
 
 import java.io.IOException;
 
@@ -31,4 +29,11 @@ public interface BRIVAService {
      * @return String "Y" is paid and "N" is unpaid
      */
     String getStatusPayment(String institutionCode, Long accountNumber, String customerCode) throws IOException, InterruptedException;
+
+
+    /**
+     * @param request is DTO for update payment status
+     * @return StatusResponse
+     */
+    BaseResponseBRIVA<StatusResponse> updateStatusPayment(StatusRequest request) throws IOException, InterruptedException;
 }

@@ -3,9 +3,7 @@ package io.github.basithnurfaizin.payment.briva;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.basithnurfaizin.payment.briva.dto.BaseResponseBRIVA;
-import io.github.basithnurfaizin.payment.briva.dto.VirtualAccountRequest;
-import io.github.basithnurfaizin.payment.briva.dto.VirtualAccountResponse;
+import io.github.basithnurfaizin.payment.briva.dto.*;
 import io.github.basithnurfaizin.payment.enums.MessageConstant;
 import io.github.basithnurfaizin.payment.exception.BRIVAException;
 import io.github.basithnurfaizin.payment.security.AuthenticationBRIVAServiceImpl;
@@ -72,9 +70,6 @@ public class BRIVAServiceImpl implements BRIVAService {
             HttpResponse<String> response = HttpClientConfig.httpClient
                     .send(requestCreateVirtualAccount, HttpResponse.BodyHandlers.ofString());
 
-
-            System.out.println(response.statusCode());
-            System.out.println(response.body());
             BaseResponseBRIVA<VirtualAccountResponse> responseBRIVA = objectMapper.readValue(
                     response.body(),
                     new TypeReference<>() {
@@ -125,6 +120,56 @@ public class BRIVAServiceImpl implements BRIVAService {
         BaseResponseBRIVA<VirtualAccountResponse> responseBRIVA = convertStringToObject(authenticate, formattedTime, path);
 
         return responseBRIVA.getData().getStatus();
+    }
+
+    @Override
+    public BaseResponseBRIVA<StatusResponse> updateStatusPayment(StatusRequest request) throws IOException, InterruptedException {
+
+
+        String requestString = objectMapper.writeValueAsString(request);
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String formattedTime =  sdf.format(timestamp);
+
+        AuthenticationResponse authenticate = authenticationBRIVAService.authenticate();
+
+
+        String path = RELATIVE_URL+"/status";
+
+        String payload = "path="+ path +"&verb=PUT&token=Bearer "+authenticate.getAccessToken()+"&timestamp="+formattedTime+"&body="+requestString;
+
+        SignatureBRIVA signatureBRIVA = new SignatureBRIVA();
+
+        String signature = signatureBRIVA.getSignature(authenticationBRIVAService.getClientSecret(), payload);
+
+        String httpRequest = BASE_URL + RELATIVE_URL;
+
+
+        HttpRequest updateStatus = HttpRequest.newBuilder()
+                .PUT(HttpRequest.BodyPublishers.ofString(requestString))
+                .uri(URI.create(httpRequest))
+                .header("Content-Type", "application/json")
+                .header("BRI-Signature", signature)
+                .header("BRI-Timestamp", formattedTime)
+                .header("Authorization", "Bearer "+authenticate.getAccessToken())
+                .build();
+
+
+        HttpResponse<String> response = HttpClientConfig.httpClient
+                .send(updateStatus, HttpResponse.BodyHandlers.ofString());
+
+        BaseResponseBRIVA<StatusResponse> responseStatus = objectMapper.readValue(
+                response.body(),
+                new TypeReference<>() {
+                }
+        );
+
+        if (!responseStatus.getStatus() && responseStatus.getResponseCode().equalsIgnoreCase("14")) {
+            throw new BRIVAException(MessageConstant.VIRTUAL_ACCOUNT_NOT_FOUND);
+        }
+
+        return responseStatus;
     }
 
     private BaseResponseBRIVA<VirtualAccountResponse> convertStringToObject(AuthenticationResponse authenticate, String formattedTime, String path) throws IOException, InterruptedException {
