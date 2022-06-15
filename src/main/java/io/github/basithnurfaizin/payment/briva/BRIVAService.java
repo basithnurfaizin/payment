@@ -36,4 +36,6 @@ public interface BRIVAService {
      * @return StatusResponse
      */
     BaseResponseBRIVA<StatusResponse> updateStatusPayment(StatusRequest request) throws IOException, InterruptedException;
+
+    BaseResponseBRIVA<VirtualAccountResponse> updateVirtualAccount(VirtualAccountRequest request) throws IOException, InterruptedException;
 }

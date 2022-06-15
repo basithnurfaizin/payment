@@ -137,6 +137,23 @@ public class BRIVAServiceImpl implements BRIVAService {
 
         String path = RELATIVE_URL+"/status";
 
+        HttpResponse<String> response = convertPayloadUpdate(requestString, formattedTime, authenticate, path);
+
+
+        BaseResponseBRIVA<StatusResponse> responseStatus = objectMapper.readValue(
+                response.body(),
+                new TypeReference<>() {
+                }
+        );
+
+        if (!responseStatus.getStatus() && responseStatus.getResponseCode().equalsIgnoreCase("14")) {
+            throw new BRIVAException(MessageConstant.VIRTUAL_ACCOUNT_NOT_FOUND);
+        }
+
+        return responseStatus;
+    }
+
+    private HttpResponse<String> convertPayloadUpdate(String requestString, String formattedTime, AuthenticationResponse authenticate, String path) throws IOException, InterruptedException {
         String payload = "path="+ path +"&verb=PUT&token=Bearer "+authenticate.getAccessToken()+"&timestamp="+formattedTime+"&body="+requestString;
 
         SignatureBRIVA signatureBRIVA = new SignatureBRIVA();
@@ -156,20 +173,35 @@ public class BRIVAServiceImpl implements BRIVAService {
                 .build();
 
 
-        HttpResponse<String> response = HttpClientConfig.httpClient
+        return HttpClientConfig.httpClient
                 .send(updateStatus, HttpResponse.BodyHandlers.ofString());
+    }
 
-        BaseResponseBRIVA<StatusResponse> responseStatus = objectMapper.readValue(
+    @Override
+    public BaseResponseBRIVA<VirtualAccountResponse> updateVirtualAccount(VirtualAccountRequest request) throws IOException, InterruptedException {
+
+        String requestBody = objectMapper.writeValueAsString(request);
+
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String formattedTime =  sdf.format(timestamp);
+
+        AuthenticationResponse authenticate = authenticationBRIVAService.authenticate();
+
+        HttpResponse<String> response = convertPayloadUpdate(requestBody, formattedTime, authenticate, RELATIVE_URL);
+
+        BaseResponseBRIVA<VirtualAccountResponse> responseUpdate = objectMapper.readValue(
                 response.body(),
                 new TypeReference<>() {
                 }
         );
 
-        if (!responseStatus.getStatus() && responseStatus.getResponseCode().equalsIgnoreCase("14")) {
+        if (!responseUpdate.getStatus() && responseUpdate.getResponseCode().equalsIgnoreCase("14")) {
             throw new BRIVAException(MessageConstant.VIRTUAL_ACCOUNT_NOT_FOUND);
         }
 
-        return responseStatus;
+        return responseUpdate;
     }
 
     private BaseResponseBRIVA<VirtualAccountResponse> convertStringToObject(AuthenticationResponse authenticate, String formattedTime, String path) throws IOException, InterruptedException {
