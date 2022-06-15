@@ -1,4 +1,4 @@
-package id.nurfaizin.payment.enums;
+package io.github.basithnurfaizin.payment.enums;
 
 public enum MessageConstant {
 

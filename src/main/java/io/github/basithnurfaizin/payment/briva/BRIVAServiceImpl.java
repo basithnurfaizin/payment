@@ -1,17 +1,17 @@
-package id.nurfaizin.payment.briva;
+package io.github.basithnurfaizin.payment.briva;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import id.nurfaizin.payment.briva.dto.BaseResponseBRIVA;
-import id.nurfaizin.payment.briva.dto.VirtualAccountRequest;
-import id.nurfaizin.payment.briva.dto.VirtualAccountResponse;
-import id.nurfaizin.payment.enums.MessageConstant;
-import id.nurfaizin.payment.exception.BRIVAException;
-import id.nurfaizin.payment.security.AuthenticationBRIVAServiceImpl;
-import id.nurfaizin.payment.security.AuthenticationResponse;
-import id.nurfaizin.payment.signature.SignatureBRIVA;
-import id.nurfaizin.payment.util.HttpClientConfig;
+import io.github.basithnurfaizin.payment.briva.dto.BaseResponseBRIVA;
+import io.github.basithnurfaizin.payment.briva.dto.VirtualAccountRequest;
+import io.github.basithnurfaizin.payment.briva.dto.VirtualAccountResponse;
+import io.github.basithnurfaizin.payment.enums.MessageConstant;
+import io.github.basithnurfaizin.payment.exception.BRIVAException;
+import io.github.basithnurfaizin.payment.security.AuthenticationBRIVAServiceImpl;
+import io.github.basithnurfaizin.payment.security.AuthenticationResponse;
+import io.github.basithnurfaizin.payment.signature.SignatureBRIVA;
+import io.github.basithnurfaizin.payment.util.HttpClientConfig;
 
 import java.io.IOException;
 import java.net.URI;

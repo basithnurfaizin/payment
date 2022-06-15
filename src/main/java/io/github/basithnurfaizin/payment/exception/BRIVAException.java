@@ -1,6 +1,6 @@
-package id.nurfaizin.payment.exception;
+package io.github.basithnurfaizin.payment.exception;
 
-import id.nurfaizin.payment.enums.MessageConstant;
+import io.github.basithnurfaizin.payment.enums.MessageConstant;
 
 public class BRIVAException extends RuntimeException {
 

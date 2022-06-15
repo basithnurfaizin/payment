@@ -1,4 +1,4 @@
-package id.nurfaizin.payment.signature;
+package io.github.basithnurfaizin.payment.signature;
 
 public interface Signature {
 

@@ -1,6 +1,6 @@
-package id.nurfaizin.payment.signature;
+package io.github.basithnurfaizin.payment.signature;
 
-import id.nurfaizin.payment.util.HMAC;
+import io.github.basithnurfaizin.payment.util.HMAC;
 
 import java.util.Base64;
 

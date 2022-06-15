@@ -1,4 +1,4 @@
-package id.nurfaizin.payment.util;
+package io.github.basithnurfaizin.payment.util;
 
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
